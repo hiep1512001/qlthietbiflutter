@@ -1,4 +1,6 @@
+import 'package:bvnd115app/providers/chitietthietbiprovider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ChiTietThietBi extends StatelessWidget {
   const ChiTietThietBi({super.key});
@@ -35,6 +37,7 @@ class ChiTietThietBi extends StatelessWidget {
           ),
         ),
       ),
+      // backgroundColor: Color(0xffeeeeee),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -52,31 +55,55 @@ class ChiTietThietBi extends StatelessWidget {
   }
 }
 
-class _DeviceSummaryCard extends StatelessWidget {
+class _DeviceSummaryCard extends ConsumerWidget {
+  Color getColorFromName(String? name) {
+    switch (name) {
+      case 'red':
+        return Colors.red;
+      case 'blue':
+        return Colors.blue;
+      case 'green':
+        return Colors.green;
+      case 'orange':
+        return Colors.orange;
+      // thêm các màu bạn dùng
+      default:
+        return Colors.black;
+    }
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final chiTietTBState = ref.watch(chiTietTBProvider);
+    final device = chiTietTBState.tblThietBi;
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      color: Colors.white,
       elevation: 4,
+      margin: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Máy X-Quang Kỹ Thuật Số',
-                style: Theme.of(context).textTheme.titleMedium),
+            Text('Tên thiết bị: ${device!.tenThietBi.toUpperCase()}',
+                style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             Wrap(
               spacing: 12,
               runSpacing: 8,
-              children: const [
-                Text('Mã code: DEV-00123'),
+              children: [
+                Text('Mã code: ${device.maCodeThietBi}'),
                 Chip(
-                    label: Text('Đang sử dụng'),
-                    backgroundColor: Colors.greenAccent),
+                    label: Text(
+                      '${device.tblTinhTrang?.tinhTrang}',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor:
+                        getColorFromName(device.tblTinhTrang!.color)),
                 Text('Khoa: Chẩn đoán hình ảnh'),
-                Text('Model: XQ-2021'),
-                Text('Ngày nhập: 12/05/2023'),
+                Text('Model: ${device.model}'),
+                Text('Ngày nhập: ${device.ngaySuDung}'),
               ],
             )
           ],

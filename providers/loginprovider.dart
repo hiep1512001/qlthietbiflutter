@@ -1,5 +1,7 @@
 import 'package:bvnd115app/model/tblUsers.dart';
 import 'package:bvnd115app/services/userApi.dart';
+import 'package:bvnd115app/ui/DangNhap/Login.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LoginState {
@@ -8,6 +10,7 @@ class LoginState {
   String password;
   bool isLoading;
   bool isLoggedIn;
+  bool isLogOut;
   String error;
   LoginState(
       {required this.userName,
@@ -15,7 +18,8 @@ class LoginState {
       required this.isLoading,
       required this.isLoggedIn,
       required this.user,
-      required this.error});
+      required this.error,
+      required this.isLogOut});
   //hàm copp khi thay đổi
   LoginState copyWith(
       {String? userName,
@@ -23,14 +27,16 @@ class LoginState {
       bool? isLoading,
       bool? isLoggedIn,
       tblUsers? user,
-      String? error}) {
+      String? error,
+      bool? isLogOut}) {
     return LoginState(
         userName: userName ?? this.userName,
         password: password ?? this.password,
         isLoading: isLoading ?? this.isLoading,
         isLoggedIn: isLoggedIn ?? this.isLoggedIn,
         error: error ?? this.error,
-        user: user ?? this.user);
+        user: user ?? this.user,
+        isLogOut: isLogOut ?? this.isLogOut);
   }
 
   //hàm khởi tạo ban đầu
@@ -40,7 +46,8 @@ class LoginState {
       isLoading: false,
       isLoggedIn: false,
       error: "",
-      user: null);
+      user: null,
+      isLogOut: false);
 }
 
 // Notifier: chứa logic xử lý
@@ -55,7 +62,8 @@ class LoginNotifier extends StateNotifier<LoginState> {
   }
 
   Future<bool> login() async {
-    state = state.copyWith(isLoading: true, error: null);
+    state = state.copyWith(
+        isLoading: true, error: null, isLoggedIn: false, user: null);
     // await Future.delayed(Duration(seconds: 2)); // Giả lập API
     tblUsers? user =
         await UserAPI.getUserByUserName(state.userName, state.password);
@@ -76,8 +84,37 @@ class LoginNotifier extends StateNotifier<LoginState> {
     }
   }
 
-  void logout() {
-    state = LoginState.initial();
+  Future<bool> logout(BuildContext context) async {
+    if (state.isLogOut == true) {
+      state = state.copyWith(
+        isLogOut: false,
+      );
+    }
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Xác nhận đăng xuất'),
+        content: const Text('Bạn có chắc chắn muốn đăng xuất?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Huỷ'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Đăng xuất'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      state = state.copyWith(isLogOut: true, userName: "", password: "");
+      return true;
+    } else {
+      state = state.copyWith(isLogOut: false);
+      return false;
+    }
   }
 }
 

@@ -1,6 +1,7 @@
 import 'package:bvnd115app/ui/DSThietBi/chitietthietbi.dart';
 import 'package:bvnd115app/ui/DSThietBi/dsThietBi.dart';
 import 'package:bvnd115app/ui/DangNhap/Login.dart';
+import 'package:bvnd115app/ui/TaiKhoan/taikhoan.dart';
 import 'package:bvnd115app/ui/ThemThietBi/ThemThietBi.dart';
 import 'package:bvnd115app/ui/TrangChu/trangChu.dart';
 import 'package:flutter/material.dart';

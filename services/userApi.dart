@@ -16,12 +16,13 @@ class UserAPI {
     try {
       final response = await supabase
           .from('tblUsers')
-          .select()
+          .select('*,btdkp(makp,tenkp)')
           .eq('username', username)
           .eq('password', password)
           .maybeSingle();
       ;
       if (response != null) {
+        print(response);
         return tblUsers.fromJson(response as Map<String, dynamic>);
       } else {
         return null;

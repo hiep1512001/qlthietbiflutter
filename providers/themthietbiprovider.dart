@@ -130,7 +130,7 @@ class TTBNotifier extends StateNotifier<TTBState> {
       error: null,
     );
     String loi = "";
-    final user = ref.read(currentUserIdProvider);
+    final user = ref.watch(currentUserIdProvider);
     state = state.copyWith(userId: user!.id);
     if (state.loais == null) {
       List<TblLoai> loais = await LoaiAPI.getLoais();
@@ -140,10 +140,10 @@ class TTBNotifier extends StateNotifier<TTBState> {
       List<TblTinhTrang> tinhTrangs = await TinhTrangAPI.gettinhTrangs();
       state = state.copyWith(tinhTrangs: tinhTrangs);
     }
-    if (state.btdKp == null) {
-      BTDKP? btdkp = await BTDAPI.getBTDKPByMakp(user!.makp);
-      state = state.copyWith(btdKp: btdkp);
-    }
+
+    BTDKP? btdkp = await BTDAPI.getBTDKPByMakp(user!.makp);
+    state = state.copyWith(btdKp: btdkp);
+
     if (state.btdKp == null) {
       loi = loi + "Không lấy được dữ liệu khoa phòng! ";
       state = state.copyWith(isLoading: true, error: loi);

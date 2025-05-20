@@ -43,23 +43,17 @@ class DSThietBiNotifier extends StateNotifier<DSThietBiState> {
       isLoading: true,
       error: null,
     );
-    final user = ref.read(currentUserIdProvider);
-    if (state.btdkp == null) {
-      BTDKP? btdkp = await BTDAPI.getBTDKPByMakp(user!.makp);
-      state = state.copyWith(btdkp: btdkp);
-    }
-    List<TblThietBi> listThietBi =
-        await ThietBiAPI.getDSThietBiByMakp(user!.makp);
-    if (listThietBi.length != 0) {
-      state = state.copyWith(isLoading: false, listThietBi: listThietBi);
-    } else {
-      state = state.copyWith(isLoading: false);
-    }
+    // final user = ref.read(currentUserIdProvider);
+    BTDKP? btdkp = await BTDAPI.getBTDKPByMakp(27);
+    state = state.copyWith(btdkp: btdkp);
+    List<TblThietBi> listThietBi = await ThietBiAPI.getDSThietBiByMakp(27);
+    state = state.copyWith(listThietBi: listThietBi);
+    state = state.copyWith(isLoading: false);
   }
 }
 
 final dsThietBiProvider =
-    StateNotifierProvider<DSThietBiNotifier, DSThietBiState>(
+    StateNotifierProvider.autoDispose<DSThietBiNotifier, DSThietBiState>(
   (ref) => DSThietBiNotifier(ref)..LoadData(),
 );
 final currentUserIdProvider = Provider<tblUsers?>((ref) {

@@ -49,7 +49,7 @@ class ThemThietBi extends StatelessWidget {
           ),
         ),
       ),
-      backgroundColor: Color(0xffeeeeee),
+      // backgroundColor: Color(0xffeeeeee),
       body: CustomContentThemThietBi(),
       bottomNavigationBar: PreferredSize(
         preferredSize: Size.fromHeight(60), // Chiều cao của nút
@@ -86,12 +86,19 @@ class CustomContentThemThietBi extends ConsumerWidget {
           )
         : SingleChildScrollView(
             child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
               decoration: BoxDecoration(
-                color: Colors.white, // Màu nền của container
-                borderRadius:
-                    BorderRadius.circular(10), // Bo góc với bán kính 20
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    spreadRadius: 2,
+                    blurRadius: 6,
+                    offset: Offset(0, 3), // đổ bóng xuống dưới
+                  ),
+                ],
               ),
               child: Column(
                 children: [

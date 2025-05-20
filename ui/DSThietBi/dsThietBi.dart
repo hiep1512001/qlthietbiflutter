@@ -1,3 +1,4 @@
+import 'package:bvnd115app/providers/chitietthietbiprovider.dart';
 import 'package:bvnd115app/providers/dsthietbiprovider.dart';
 import 'package:bvnd115app/ui/DSThietBi/chitietthietbi.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,6 @@ class DSThietBi extends StatelessWidget {
             ),
           ),
         ),
-        backgroundColor: Color(0xffeeeeee),
         body: CustomContent());
   }
 }
@@ -62,6 +62,7 @@ class CustomContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dsThietBiState = ref.watch(dsThietBiProvider);
     final devices = dsThietBiState.listThietBi;
+    final chiTietTBNotifier = ref.read(chiTietTBProvider.notifier);
     return dsThietBiState.isLoading
         ? Center(
             child: Column(
@@ -109,6 +110,7 @@ class CustomContent extends ConsumerWidget {
                   ),
                   isThreeLine: true,
                   onTap: () => {
+                    chiTietTBNotifier.updateThietBiSelect(device),
                     Navigator.push(
                       context,
                       PageRouteBuilder(

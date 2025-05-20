@@ -1,13 +1,18 @@
+import 'package:bvnd115app/providers/loginprovider.dart';
+import 'package:bvnd115app/state/stateLogin.dart';
 import 'package:bvnd115app/ui/DSThietBi/dsThietBi.dart';
+import 'package:bvnd115app/ui/TaiKhoan/taikhoan.dart';
 import 'package:bvnd115app/ui/ThemThietBi/ThemThietBi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TrangChu extends StatelessWidget {
+class TrangChu extends ConsumerWidget {
   const TrangChu({super.key});
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final screens = [CustomContentTrangChu(), Taikhoan()];
+    int selectedIndex = ref.watch(selectedIndexTab);
+    final user = ref.watch(loginProvider);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70.0),
@@ -25,7 +30,10 @@ class TrangChu extends StatelessWidget {
           ),
         ),
       ),
-      body: CustomContentTrangChu(),
+      body: IndexedStack(
+        index: selectedIndex,
+        children: screens,
+      ),
       drawer: Drawer(
         backgroundColor: Colors.white,
         // Add a ListView to the drawer. This ensures the user can scroll
@@ -35,45 +43,41 @@ class TrangChu extends StatelessWidget {
           // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Color(0xff0d47a1)),
-              child: Text(
-                'BỆNH VIỆN NHÂN DÂN 115',
-                style: TextStyle(color: Colors.white, fontSize: 20),
+            DrawerHeader(
+              decoration: const BoxDecoration(color: Colors.blue),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                      radius: 30,
+                      backgroundImage:
+                          AssetImage('assets/images/logobvnd115.jpg')),
+                  SizedBox(height: 10),
+                  Text('Tài khoản: ${user.user!.username}',
+                      style: TextStyle(color: Colors.white)),
+                  Text('Khoa/Phòng: ${user.user!.btdkp!.tenkp}',
+                      style: TextStyle(color: Colors.white)),
+                ],
               ),
             ),
             ListTile(
               leading: Icon(Icons.home),
               title: const Text('Trang chủ'),
-              // selected: _selectedIndex == 0,
-              onTap: () {
-                // Update the state of the app
-                // _onItemTapped(0);
-                // Then close the drawer
-                Navigator.pop(context);
+              selected: selectedIndexTab == 0,
+              selectedTileColor: Colors.blue.shade100,
+              onTap: () => {
+                ref.read(selectedIndexTab.notifier).state = 0,
+                Navigator.pop(context),
               },
             ),
             ListTile(
               leading: Icon(Icons.manage_accounts),
               title: const Text('Tài khoản'),
-
-              // selected: _selectedIndex == 1,
-              onTap: () {
-                // Update the state of the app
-                // _onItemTapped(1);
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.logout),
-              title: const Text('Đăng xuất'),
-              // selected: _selectedIndex == 2,
-              onTap: () {
-                // Update the state of the app
-                // _onItemTapped(2);
-                // Then close the drawer
-                Navigator.pop(context);
+              selected: selectedIndexTab == 1,
+              selectedTileColor: Colors.blue.shade100,
+              onTap: () => {
+                ref.read(selectedIndexTab.notifier).state = 1,
+                Navigator.pop(context),
               },
             ),
           ],
@@ -83,10 +87,11 @@ class TrangChu extends StatelessWidget {
   }
 }
 
-class Title extends StatelessWidget {
+class Title extends ConsumerWidget {
   const Title({super.key});
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    int selectedIndex = ref.watch(selectedIndexTab);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
